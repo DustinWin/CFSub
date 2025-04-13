@@ -123,7 +123,7 @@ export default {
 				if (url.searchParams.has('sub') && url.searchParams.get('sub') !== '') sub = url.searchParams.get('sub');
 
 				if (url.searchParams.has('proxyip')) {
-					path = `/?proxyip=${url.searchParams.get('proxyip')}`;
+					path = `/proxyip=${url.searchParams.get('proxyip')}`;
 					RproxyIP = 'false';
 				} else if (url.searchParams.has('socks5')) {
 					path = `/?socks5=${url.searchParams.get('socks5')}`;
@@ -1256,7 +1256,7 @@ function subAddresses(host, pw, userAgent, newAddressesapi, newAddressescsv) {
 		let 最终路径 = path;
 		let 节点备注 = '';
 		const matchingProxyIP = proxyIPPool.find(proxyIP => proxyIP.includes(address));
-		if (matchingProxyIP) 最终路径 = `/?proxyip=${matchingProxyIP}`;
+		if (matchingProxyIP) 最终路径 = `/proxyip=${matchingProxyIP}`;
 		
 		if (proxyhosts.length > 0 && (伪装域名.includes('.workers.dev'))) {
 			最终路径 = `/${伪装域名}${最终路径}`;
