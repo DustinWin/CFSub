@@ -39,6 +39,8 @@ let proxyIPPool = [];
 let path = '/?ed=2560';
 let link = [];
 let banHosts = [atob('c3BlZWQuY2xvdWRmbGFyZS5jb20=')];
+let SCV = 'true';
+let allowInsecure = '&allowInsecure=1';
 export default {
 	async fetch(request, env, ctx) {
 		try {
@@ -132,6 +134,9 @@ export default {
 					path = `/?socks5=${url.searchParams.get('socks')}`;
 					RproxyIP = 'false';
 				}
+				SCV = env.SCV || SCV;
+ 				if (!SCV || SCV == '0' || SCV == 'false') allowInsecure = '';
+ 				else SCV = 'true';
 				switch (url.pathname) {
 					case '/':
 						if (env.URL302) return Response.redirect(env.URL302, 302);
@@ -657,8 +662,8 @@ function 配置信息(密码, 域名地址) {
 	const SNI = 域名地址;
 	const 指纹 = 'randomized';
 
-	const v2ray = `${协议类型}://${encodeURIComponent(密码)}@${地址}:${端口}?security=${传输层安全[0]}&sni=${SNI}&alpn=h3&fp=${指纹}&allowInsecure=1&type=${传输层协议}&host=${伪装域名}&path=${encodeURIComponent(路径)}&fragment=1,40-60,30-50,tlshello#${encodeURIComponent(别名)}`
-	const clash = `- {name: ${别名}, server: ${地址}, port: ${端口}, udp: false, client-fingerprint: ${指纹}, type: ${协议类型}, password: ${密码}, sni: ${SNI}, alpn: [h3], skip-cert-verify: true, network: ${传输层协议}, ws-opts: {path: "${路径}", headers: {Host: ${伪装域名}}}}`;
+	const v2ray = `${协议类型}://${encodeURIComponent(密码)}@${地址}:${端口}?security=${传输层安全[0]}&sni=${SNI}&alpn=h3&fp=${指纹}&type=${传输层协议}&host=${伪装域名}&path=${encodeURIComponent(路径) + allowInsecure}&fragment=1,40-60,30-50,tlshello#${encodeURIComponent(别名)}`
+	const clash = `- {name: ${别名}, server: ${地址}, port: ${端口}, udp: false, client-fingerprint: ${指纹}, type: ${协议类型}, password: ${密码}, sni: ${SNI}, alpn: [h3], skip-cert-verify: ${SCV}, network: ${传输层协议}, ws-opts: {path: "${路径}", headers: {Host: ${伪装域名}}}}`;
 
 	return [v2ray, clash];
 }
@@ -894,6 +899,7 @@ async function get特洛伊Config(password, hostName, sub, UA, RproxyIP, _url, f
 			SHA224: ${sha224Password}<br>
 			FAKEPASS: ${fakeUserID}<br>
 			UA: ${UA}<br>
+			SCV（跳过TLS证书验证）: ${SCV}<br>
 			<br>
 			${订阅器}<br>
 			SUBAPI（订阅转换后端）: ${subProtocol}://${subConverter}<br>
@@ -962,16 +968,16 @@ async function get特洛伊Config(password, hostName, sub, UA, RproxyIP, _url, f
 
 		if (!userAgent.includes(('CF-Workers-SUB').toLowerCase()) && !_url.searchParams.has('b64') && !_url.searchParams.has('base64')) {
 			if ((userAgent.includes('clash') && !userAgent.includes('nekobox')) || (_url.searchParams.has('clash'))) {
-				url = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+				url = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=${SCV}&fdn=false&sort=false&new_name=true`;
 				isBase64 = false;
 			} else if (userAgent.includes('sing-box') || userAgent.includes('singbox') || _url.searchParams.has('singbox') || _url.searchParams.has('sb')) {
-				url = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+				url = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=${SCV}&fdn=false&sort=false&new_name=true`;
 				isBase64 = false;
 			} else if (userAgent.includes('surge') || _url.searchParams.has('surge')) {
-				url = `${subProtocol}://${subConverter}/sub?target=surge&ver=4&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=true&fdn=false`;
+				url = `${subProtocol}://${subConverter}/sub?target=surge&ver=4&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=${SCV}&fdn=false`;
 				isBase64 = false;
 			} else if (userAgent.includes('loon') || _url.searchParams.has('loon')) {
-				url = `${subProtocol}://${subConverter}/sub?target=loon&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+				url = `${subProtocol}://${subConverter}/sub?target=loon&url=${encodeURIComponent(url)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=${subEmoji}&list=false&tfo=false&scv=${SCV}&fdn=false&sort=false&new_name=true`;
 				isBase64 = false;
 			}
 		}
@@ -1269,7 +1275,7 @@ function subAddresses(host, pw, userAgent, newAddressesapi, newAddressescsv) {
 
 		const 啥啥啥_写的这是啥啊 = 'dHJvamFu';
 		const 协议类型 = atob(啥啥啥_写的这是啥啊);
-		const 特洛伊Link = `${协议类型}://${密码}@${address}:${port}?security=tls&sni=${伪装域名}&fp=randomized&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径)}&allowInsecure=1&fragment=1,40-60,30-50,tlshello#${encodeURIComponent(addressid + 节点备注)}`;
+		const 特洛伊Link = `${协议类型}://${密码}@${address}:${port}?security=tls&sni=${伪装域名}&fp=randomized&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径) + allowInsecure}&fragment=1,40-60,30-50,tlshello#${encodeURIComponent(addressid + 节点备注)}`;
 
 		return 特洛伊Link;
 	}).join('\n');
