@@ -1,0 +1,66 @@
+name: Build CFBestIP
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 19 * * *"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "*.js"
+      - "*.md"
+      - "*.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@main
+
+      - name: Download cfbestip
+        run: |
+          echo "update_version=$(date -d '+8 hours' +%Y-%m-%d)" >> ${GITHUB_ENV}
+          mkdir -p ./CFBestIP/
+          # CMCC
+          curl -sSL https://addressesapi.090227.xyz/cmcc | sed 's/#.*//' | awk '{print $0 "#CMCC-IPv4 " NR}' > ./CFBestIP/cmcc.txt
+          curl -sSL https://addressesapi.090227.xyz/cmcc-ipv6 | sed 's/#.*//' | awk '{print $0 "#CMCC-IPv6 " NR}' >> ./CFBestIP/cmcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CM")) | .ip' | awk '{print $0 "#CloudFlareYes_CMCC-IPv4 " NR}' >> ./CFBestIP/cmcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CM")) | .ip' | awk '{ print "[" $0 "]#CloudFlareYes_CMCC-IPv6 " NR }' >> ./CFBestIP/cmcc.txt
+
+          # CTCC
+          curl -sSL https://addressesapi.090227.xyz/ct | sed 's/#.*//' | awk '{print $0 "#CTCC-IPv4 " NR}' > ./CFBestIP/ctcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CT")) | .ip' | awk '{print $0 "#CloudFlareYes_CTCC-IPv4 " NR}' >> ./CFBestIP/ctcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CT")) | .ip' | awk '{ print "[" $0 "]#CloudFlareYes_CTCC-IPv6 " NR }' >> ./CFBestIP/ctcc.txt
+
+          # CUCC
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CU")) | .ip' | awk '{print $0 "#CloudFlareYes_CUCC-IPv4 " NR}' > ./CFBestIP/cucc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CU")) | .ip' | awk '{ print "[" $0 "]#CloudFlareYes_CUCC-IPv6 " NR }' >> ./CFBestIP/cucc.txt
+
+          # CF
+          curl -sSL https://ip.164746.xyz | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | awk '{print $0 "#164746_CF " NR}' > ./CFBestIP/cf.txt
+          curl -sSL https://ipdb.api.030101.xyz/?type=bestcf | awk '{print $0 "#030101_CF " NR}' >> ./CFBestIP/cf.txt
+
+      - name: Release and upload `CFBestIP` assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: CFBestIP
+          tag: CFBestIP
+          overwrite: true
+          body: |
+            cmcc.txt → 移动优选 IP
+            ctcc.txt → 电信优选 IP
+            cucc.txt → 联通优选 IP
+            cf.txt → CloudFlare 优选 IP
+            CFBestIP 文件更新于 ${{ env.update_version }}
+          file_glob: true
+          file: ./CFBestIP/*
+
+      - name: Delete old workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 3
+          keep_minimum_runs: 1
