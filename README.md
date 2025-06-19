@@ -1,3 +1,13 @@
+**文件说明：**  
+1. 每天凌晨 3 点（北京时间 UTC+8）自动构建
+2. [**cmcc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cmcc.txt) 源采用 <https://addressesapi.090227.xyz/cmcc>、<https://addressesapi.090227.xyz/cmcc-ipv6>（移动）、<https://stock.hostmonit.com/CloudFlareYes> 和 <https://stock.hostmonit.com/CloudFlareYesV6>（移动）组合
+3. [**ctcc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/ctcc.txt) 源采用 <https://addressesapi.090227.xyz/ct>、<https://stock.hostmonit.com/CloudFlareYes>（电信）和 <https://stock.hostmonit.com/CloudFlareYesV6>（电信）组合
+4. [**cucc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cucc.txt) 源采用 <https://stock.hostmonit.com/CloudFlareYes>（联通）和 <https://stock.hostmonit.com/CloudFlareYesV6>（联通）组合
+5. [**cf.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cf.txt) 源采用 <https://ip.164746.xyz> 和 <https://ipdb.api.030101.xyz/?type=bestcf> 组合
+
+<details>
+<summary>原 README</summary>
+
 # 🚀 epeius
 这是一个基于 CF Worker 平台的脚本，在原版的基础上修改了显示 Trojan 配置信息转换为订阅内容。使用该脚本，你可以方便地将 Trojan 配置信息使用在线配置转换到 Clash 或 Singbox 等工具中。
 
@@ -285,3 +295,5 @@ Telegram交流群：[@CMLiussss](https://t.me/CMLiussss)
 - [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR/tree/master/Clash/config)
 - [SHIJS1999](https://github.com/SHIJS1999/cloudflare-worker-vless-ip)
 - [股神](https://t.me/CF_NAT/38889)
+
+</details>
