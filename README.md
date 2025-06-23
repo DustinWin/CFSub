@@ -1,5 +1,5 @@
 **文件说明：**  
-1. 每天凌晨 3 点（北京时间 UTC+8）自动构建
+1. 每 12 小时自动构建
 2. [**cmcc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cmcc.txt) 源采用 <https://addressesapi.090227.xyz/cmcc>、<https://addressesapi.090227.xyz/cmcc-ipv6>、<https://stock.hostmonit.com/CloudFlareYes>（移动）和 <https://stock.hostmonit.com/CloudFlareYesV6>（移动）组合
 3. [**ctcc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/ctcc.txt) 源采用 <https://addressesapi.090227.xyz/ct>、<https://stock.hostmonit.com/CloudFlareYes>（电信）和 <https://stock.hostmonit.com/CloudFlareYesV6>（电信）组合
 4. [**cucc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cucc.txt) 源采用 <https://stock.hostmonit.com/CloudFlareYes>（联通）和 <https://stock.hostmonit.com/CloudFlareYesV6>（联通）组合
