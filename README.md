@@ -175,6 +175,7 @@ Telegram交流群：[@CMLiussss](https://t.me/CMLiussss)
 | HTTP  | `user:password@127.0.0.1:8080`或`127.0.0.1:8080` | 优先作为访问CFCDN站点的HTTP代理(支持多HTTP代理之间使用`,`或`换行`作间隔) |
 | SOCKS5  | `user:password@127.0.0.1:1080`或`127.0.0.1:1080` | 优先作为访问CFCDN站点的SOCKS5代理(支持多socks5, socks5之间使用`,`或`换行`作间隔) |
 | GO2SOCKS5  | `blog.cmliussss.com`,`*.ip111.cn`,`*google.com` | 设置`SOCKS5`或`HTTP`变量之后，可设置强制使用socks5访问名单(设置为`*`可作为全局代理) |
+| NAT64 | `dns64.cmi.ztvi.org`或`2001:67c:2960:6464::/96` | 作为PROXYIP失效后的应急兜底，自行查询[nat64.xyz](https://nat64.xyz/)的`DNS64 Server`或`NAT64 Prefix` |
 | ADD | `www.csgo.com:2087`,`icook.hk` | 本地优选域名/优选IP(支持多元素之间`,`或`换行`作间隔) |
 | ADDAPI | [https://raw.github.../addressesapi.txt](https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt) | 不解释, 懂得都懂 |
 | ADDCSV | [https://raw.github.../addressescsv.csv](https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressescsv.csv) | 不解释, 懂得都懂 |
