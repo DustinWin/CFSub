@@ -42,8 +42,8 @@ jobs:
           curl -sSL https://ipdb.api.030101.xyz/?type=bestcfv4 | awk '{print $0 "#IPDB_CF-IPv4 " NR}' >> ./CFBestIP/cf.txt
           curl -sSL https://ipdb.api.030101.xyz/?type=bestcfv6 | awk '{ print "[" $0 "]#IPDB_CF-IPv6 " NR}' >> ./CFBestIP/cf.txt
 
-          # Other (反代优选 IP)
-          curl -sSL 'https://ipdb.api.030101.xyz/?type=bestproxy&country=true' > ./CFBestIP/other.txt
+          # ProxyIP (反代优选 IP)
+          curl -sSL 'https://ipdb.api.030101.xyz/?type=bestproxy&country=true' > ./CFBestIP/proxyip.txt
 
       - name: Release and upload `CFBestIP` assets
         uses: svenstaro/upload-release-action@v2

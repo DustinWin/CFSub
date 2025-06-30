@@ -4,7 +4,7 @@
 3. [**ctcc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/ctcc.txt) 源采用 <https://addressesapi.090227.xyz/ct>、<https://stock.hostmonit.com/CloudFlareYes>（电信）和 <https://stock.hostmonit.com/CloudFlareYesV6>（电信）组合
 4. [**cucc.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cucc.txt) 源采用 <https://stock.hostmonit.com/CloudFlareYes>（联通）和 <https://stock.hostmonit.com/CloudFlareYesV6>（联通）组合
 5. [**cf.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/cf.txt) 源采用 <https://ip.164746.xyz> 和 <https://ipdb.api.030101.xyz/?type=bestcf> 组合
-6. [**other.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/other.txt)（反代优选 IP）源采用 <https://ipdb.api.030101.xyz/?type=bestproxy&country=true>
+6. [**proxyip.txt**](https://github.com/DustinWin/CFSub/releases/download/CFBestIP/proxyip.txt)（反代优选 IP）源采用 <https://ipdb.api.030101.xyz/?type=bestproxy&country=true>
 
 <details>
 <summary>原 README</summary>
