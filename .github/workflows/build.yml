@@ -1,0 +1,83 @@
+name: Build CFBest
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */12 * * *"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "*.js"
+      - "*.md"
+      - "*.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@main
+
+      - name: Download CloudFlare Best Domains
+        run: |
+          echo "update_version=$(date -d '+8 hours' +%Y-%m-%d)" >> ${GITHUB_ENV}
+          mkdir -p ./CFBest/
+          curl -sSL https://www.wetest.vip/page/cloudflare/cname.html | grep 'td data-label="地址名称"' | awk -F'[<>]' '{print $3}' | sed 's/\*/cfbest/' > ./CFBest/cfdomain.txt
+          echo "bestcf.030101.xyz" >> ./CFBest/cfdomain.txt
+
+      - name: Download CloudFlare Best IPs
+        run: |
+          # CMCC
+          curl -sSL https://addressesapi.090227.xyz/cmcc | sed 's/#.*//' | awk '{print $0 "#CMLiu_CMCC-IPv4 " NR}' > ./CFBest/cmcc.txt
+          curl -sSL https://addressesapi.090227.xyz/cmcc-ipv6 | sed 's/#.*//' | awk '{print $0 "#CMLiu_CMCC-IPv6 " NR}' >> ./CFBest/cmcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CM")) | .ip' | awk '{print $0 "#CFYes_CMCC-IPv4 " NR}' >> ./CFBest/cmcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CM")) | .ip' | awk '{ print "[" $0 "]#CFYes_CMCC-IPv6 " NR }' >> ./CFBest/cmcc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/移动/ {getline; print}' | awk -F'[<>]' '{print $3 "#WeTest_CMCC-IPv4 " NR}' >> ./CFBest/cmcc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/移动/ {getline; print}' | awk -F'[<>]' '{print "[" $3 "]#WeTest_CMCC-IPv6 " NR}' >> ./CFBest/cmcc.txt
+
+          # CTCC
+          curl -sSL https://addressesapi.090227.xyz/ct | sed 's/#.*//' | awk '{print $0 "#CMLiu_CTCC-IPv4 " NR}' > ./CFBest/ctcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CT")) | .ip' | awk '{print $0 "#CFYes_CTCC-IPv4 " NR}' >> ./CFBest/ctcc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CT")) | .ip' | awk '{ print "[" $0 "]#CFYes_CTCC-IPv6 " NR }' >> ./CFBest/ctcc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/电信/ {getline; print}' | awk -F'[<>]' '{print $3 "#WeTest_CTCC-IPv4 " NR}' >> ./CFBest/ctcc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/电信/ {getline; print}' | awk -F'[<>]' '{print "[" $3 "]#WeTest_CTCC-IPv6 " NR}' >> ./CFBest/ctcc.txt
+
+          # CUCC
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys"}' | jq -r '.info[] | select(.line | test("CU")) | .ip' | awk '{print $0 "#CFYes_CUCC-IPv4 " NR}' > ./CFBest/cucc.txt
+          curl -sSL https://api.hostmonit.com/get_optimization_ip --data-raw '{"key":"iDetkOys","type":"v6"}' | jq -r '.info[] | select(.line | test("CU")) | .ip' | awk '{ print "[" $0 "]#CFYes_CUCC-IPv6 " NR }' >> ./CFBest/cucc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v4.html | awk '/联通/ {getline; print}' | awk -F'[<>]' '{print $3 "#WeTest_CUCC-IPv4 " NR}' >> ./CFBest/cucc.txt
+          curl -sSL https://www.wetest.vip/page/cloudflare/address_v6.html | awk '/联通/ {getline; print}' | awk -F'[<>]' '{print "[" $3 "]#WeTest_CUCC-IPv6 " NR}' >> ./CFBest/cucc.txt
+
+          # CF
+          curl -sSL https://ip.164746.xyz/ipTop10.html | tr ',' '\n' | awk '{print $0 "#CFSpeedTest_CF " NR}' > ./CFBest/cfip.txt
+          curl -sSL https://ipdb.api.030101.xyz/?type=bestcfv4 | awk '{print $0 "#IPDB_CF-IPv4 " NR}' >> ./CFBest/cfip.txt
+          curl -sSL https://ipdb.api.030101.xyz/?type=bestcfv6 | awk '{ print "[" $0 "]#IPDB_CF-IPv6 " NR}' >> ./CFBest/cfip.txt
+
+          # ProxyIP (反代优选 IP)
+          curl -sSL 'https://ipdb.api.030101.xyz/?type=bestproxy&country=true' > ./CFBest/proxyip.txt
+
+      - name: Release and upload `CFBest` assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: CFBest
+          tag: CFBest
+          overwrite: true
+          body: |
+            cfdomain.txt → CloudFlare 优选域名
+            cmcc.txt → 移动优选 IP
+            ctcc.txt → 电信优选 IP
+            cucc.txt → 联通优选 IP
+            cfip.txt → CloudFlare 优选 IP
+            proxyip.txt → 反代优选 IP
+            CFBest 文件更新于 ${{ env.update_version }}
+          file_glob: true
+          file: ./CFBest/*
+
+      - name: Delete old workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 3
+          keep_minimum_runs: 1
